@@ -1,3 +1,0 @@
-[submodule "src/fake_ar_publisher"]
-	path = src/fake_ar_publisher
-	url = https://github.com/ros-industrial/fake_ar_publisher.git
