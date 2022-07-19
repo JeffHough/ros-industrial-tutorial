@@ -14,52 +14,51 @@ public:
         "ar_pose_marker",
         rclcpp::QoS(1),
         std::bind(&Localizer::visionCallback, this, std::placeholders::_1));
-        
-	server_ = this->create_service<myworkcell_core::srv::LocalizePart>(
-	  "localize_part",
-	  std::bind(&Localizer::localizePart, this, std::placeholders::_1, std::placeholders::_2));
+
+    server_ = this->create_service<myworkcell_core::srv::LocalizePart>(
+        "localize_part",
+        std::bind(&Localizer::localizePart, this, std::placeholders::_1, std::placeholders::_2));
   }
 
   void visionCallback(fake_ar_publisher::msg::ARMarker::SharedPtr msg)
   {
     last_msg_ = msg;
     RCLCPP_INFO(get_logger(), "Received pose: x=%f, y=%f, z=%f",
-        msg->pose.pose.position.x,
-        msg->pose.pose.position.y,
-        msg->pose.pose.position.z);
+                msg->pose.pose.position.x,
+                msg->pose.pose.position.y,
+                msg->pose.pose.position.z);
   }
-  
+
   void localizePart(
-  	myworkcell_core::srv::LocalizePart::Request::SharedPtr req,
-  	myworkcell_core::srv::LocalizePart::Response::SharedPtr res)
+      myworkcell_core::srv::LocalizePart::Request::SharedPtr req,
+      myworkcell_core::srv::LocalizePart::Response::SharedPtr res)
   {
-  	// Read the last message:
-	fake_ar_publisher::msg::ARMarker::SharedPtr p = last_msg_;
-	
-	if (!p){
-		RCLCPP_ERROR(get_logger(), "no data");
-		res->success = false;
-		return;
-	}
-	
-	res->pose = p->pose.pose;
-	res->success = true;
+    // Read the last message:
+    fake_ar_publisher::msg::ARMarker::SharedPtr p = last_msg_;
+
+    if (!p)
+    {
+      RCLCPP_ERROR(get_logger(), "no data");
+      res->success = false;
+      return;
+    }
+
+    res->pose = p->pose.pose;
+    res->success = true;
   }
 
   rclcpp::Subscription<fake_ar_publisher::msg::ARMarker>::SharedPtr ar_sub_;
   fake_ar_publisher::msg::ARMarker::SharedPtr last_msg_;
   rclcpp::Service<myworkcell_core::srv::LocalizePart>::SharedPtr server_;
-
 };
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
-rclcpp::init(argc, argv);
-auto node = std::make_shared<Localizer>();
+  rclcpp::init(argc, argv);
+  auto node = std::make_shared<Localizer>();
 
-RCLCPP_INFO(node->get_logger(), "Vision node starting");
+  RCLCPP_INFO(node->get_logger(), "Vision node starting");
 
-
-// Don't exit the program.
-rclcpp::spin(node);
+  // Don't exit the program.
+  rclcpp::spin(node);
 }
