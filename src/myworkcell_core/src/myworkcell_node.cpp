@@ -7,6 +7,7 @@ public:
   ScanNPlan() : Node("scan_n_plan")
   {
     vision_client_ = create_client<myworkcell_core::srv::LocalizePart>("localize_part");
+    declare_parameter("base_frame", "world");
   }
 
   void start()
