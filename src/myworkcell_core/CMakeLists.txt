@@ -16,6 +16,8 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(fake_ar_publisher REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
+find_package(tf2_ros REQUIRED)
+find_package(tf2_geometry_msgs REQUIRED)
 
 # generate the new ros interface:
 rosidl_generate_interfaces(${PROJECT_NAME}
@@ -33,7 +35,7 @@ endif()
 add_executable(vision_node src/vision_node.cpp)
 
 # add the dependencies:
-ament_target_dependencies(vision_node rclcpp fake_ar_publisher)
+ament_target_dependencies(vision_node rclcpp fake_ar_publisher tf2_ros tf2_geometry_msgs)
 rosidl_target_interfaces(vision_node ${PROJECT_NAME} "rosidl_typesupport_cpp")
 
 
